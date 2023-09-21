@@ -1,0 +1,244 @@
+# Keep this file in your GIT repo to help drom track generated files
+# begin version
+version:0.8.0
+# end version
+
+# hash of toml configuration files
+# used for generation of all files
+463b3897e4632c26abf6f4066ee40771:.
+# end context for .
+
+# begin context for .github/workflows/workflow.yml
+# file .github/workflows/workflow.yml
+947a10beb468c37416a43b8376fd15c4:.github/workflows/workflow.yml
+# end context for .github/workflows/workflow.yml
+
+# begin context for .gitignore
+# file .gitignore
+e1939cec68e41370ce08961d338ea65a:.gitignore
+# end context for .gitignore
+
+# begin context for .ocamlformat
+# file .ocamlformat
+a021399591b7aeb6f2e2854b4b8395c9:.ocamlformat
+# end context for .ocamlformat
+
+# begin context for .ocamlformat-ignore
+# file .ocamlformat-ignore
+c8f70450e7d78c0387644864ffe8cbd5:.ocamlformat-ignore
+# end context for .ocamlformat-ignore
+
+# begin context for .ocp-indent
+# file .ocp-indent
+6048407431b8d9baf725ae5365d4c2f2:.ocp-indent
+# end context for .ocp-indent
+
+# begin context for CHANGES.md
+# file CHANGES.md
+c289cecc7d80d33bdbaf13d1eb772ca3:CHANGES.md
+# end context for CHANGES.md
+
+# begin context for LICENSE.md
+# file LICENSE.md
+ec305e900c53bec2907f22d0c27716b4:LICENSE.md
+# end context for LICENSE.md
+
+# begin context for Makefile
+# file Makefile
+f53c82023b4bad2e238d638ea1366f18:Makefile
+# end context for Makefile
+
+# begin context for README.md
+# file README.md
+86203345739133198ef1996a55fcc6e8:README.md
+# end context for README.md
+
+# begin context for docs/README.txt
+# file docs/README.txt
+bfbacf00053bb9ab2a6e2ce94ed4a642:docs/README.txt
+# end context for docs/README.txt
+
+# begin context for docs/doc/index.html
+# file docs/doc/index.html
+936d8b7e6f1b4e997e7b15105432a010:docs/doc/index.html
+# end context for docs/doc/index.html
+
+# begin context for docs/favicon.png
+# file docs/favicon.png
+e739f3026aa997af4026bc428f4c9ef6:docs/favicon.png
+# end context for docs/favicon.png
+
+# begin context for docs/index.html
+# file docs/index.html
+66403d22e32b45778ee606aeca8d9296:docs/index.html
+# end context for docs/index.html
+
+# begin context for docs/sphinx/index.html
+# file docs/sphinx/index.html
+48ffe77d9ec35b7662cfee3fc9483ae6:docs/sphinx/index.html
+# end context for docs/sphinx/index.html
+
+# begin context for docs/style.css
+# file docs/style.css
+c8281f46ba9a11d0b61bc8ef67eaa357:docs/style.css
+# end context for docs/style.css
+
+# begin context for drom.toml
+# file drom.toml
+a42d735e82e1fd53b67a4eacc7cf978d:drom.toml
+# end context for drom.toml
+
+# begin context for dune
+# file dune
+0d57afa9756f983af2551804954af609:dune
+# end context for dune
+
+# begin context for dune-project
+# file dune-project
+2fef8a46b61a53bbcc2636d6ea288de2:dune-project
+# end context for dune-project
+
+# begin context for opam/macmac.opam
+# file opam/macmac.opam
+dbc2944b20a10bde571db359ce68d6af:opam/macmac.opam
+# end context for opam/macmac.opam
+
+# begin context for opam/macmac_lib.opam
+# file opam/macmac_lib.opam
+c6a785e897e21cd6aabc7a1a785f8308:opam/macmac_lib.opam
+# end context for opam/macmac_lib.opam
+
+# begin context for scripts/after.sh
+# file scripts/after.sh
+62c6489217feef26dac343e709b89c1a:scripts/after.sh
+# end context for scripts/after.sh
+
+# begin context for scripts/before.sh
+# file scripts/before.sh
+371e627833d9ac7ae2f906b5ec97aae2:scripts/before.sh
+# end context for scripts/before.sh
+
+# begin context for scripts/copy-bin.sh
+# file scripts/copy-bin.sh
+bb3a9d286f0dc64021db4194427263ee:scripts/copy-bin.sh
+# end context for scripts/copy-bin.sh
+
+# begin context for sphinx/_static/css/fixes.css
+# file sphinx/_static/css/fixes.css
+20bbe7a5dbb3c3278a1511d960616fe5:sphinx/_static/css/fixes.css
+# end context for sphinx/_static/css/fixes.css
+
+# begin context for sphinx/about.rst
+# file sphinx/about.rst
+eb990ead79170f6878ee34694c3da7c4:sphinx/about.rst
+# end context for sphinx/about.rst
+
+# begin context for sphinx/conf.py
+# file sphinx/conf.py
+882a41637b7f3af53291822c0fdb5c95:sphinx/conf.py
+# end context for sphinx/conf.py
+
+# begin context for sphinx/index.rst
+# file sphinx/index.rst
+ed6f5c7024e18fd447c0a757e45f5847:sphinx/index.rst
+# end context for sphinx/index.rst
+
+# begin context for sphinx/install.rst
+# file sphinx/install.rst
+95dbf79080b3d9dac9d7e737270e469c:sphinx/install.rst
+# end context for sphinx/install.rst
+
+# begin context for sphinx/license.rst
+# file sphinx/license.rst
+0e9018812e592f8f244df01506fcefa5:sphinx/license.rst
+# end context for sphinx/license.rst
+
+# begin context for src/macmac/dune
+# file src/macmac/dune
+7510e71d9d552ba9ce39efbecc62dd7f:src/macmac/dune
+# end context for src/macmac/dune
+
+# begin context for src/macmac/index.mld
+# file src/macmac/index.mld
+210c59d66cd0be88f413770820290414:src/macmac/index.mld
+# end context for src/macmac/index.mld
+
+# begin context for src/macmac/main.ml
+# file src/macmac/main.ml
+2bea8447fd95aba62bd66722d7b4ba36:src/macmac/main.ml
+# end context for src/macmac/main.ml
+
+# begin context for src/macmac/package.toml
+# file src/macmac/package.toml
+70907c2d7acfc8b55cb48babc58371e8:src/macmac/package.toml
+# end context for src/macmac/package.toml
+
+# begin context for src/macmac/version.mlt
+# file src/macmac/version.mlt
+940d29cde7f16cd0916ed1d5f9c41154:src/macmac/version.mlt
+# end context for src/macmac/version.mlt
+
+# begin context for src/macmac_lib/dune
+# file src/macmac_lib/dune
+3e58d41ed1ae550fbb80efcc41871913:src/macmac_lib/dune
+# end context for src/macmac_lib/dune
+
+# begin context for src/macmac_lib/index.mld
+# file src/macmac_lib/index.mld
+bf358fb57e365ba12491e44f87d5d948:src/macmac_lib/index.mld
+# end context for src/macmac_lib/index.mld
+
+# begin context for src/macmac_lib/main.ml
+# file src/macmac_lib/main.ml
+ebe66e4d74e539f07b744c9f78db1603:src/macmac_lib/main.ml
+# end context for src/macmac_lib/main.ml
+
+# begin context for src/macmac_lib/package.toml
+# file src/macmac_lib/package.toml
+05d07bf9a8e1018b7ea44ff6f8d9cdb6:src/macmac_lib/package.toml
+# end context for src/macmac_lib/package.toml
+
+# begin context for src/macmac_lib/version.mlt
+# file src/macmac_lib/version.mlt
+940d29cde7f16cd0916ed1d5f9c41154:src/macmac_lib/version.mlt
+# end context for src/macmac_lib/version.mlt
+
+# begin context for test/expect-tests/dune
+# file test/expect-tests/dune
+c0ac0ccd758133592a78e03f1aa7ea21:test/expect-tests/dune
+# end context for test/expect-tests/dune
+
+# begin context for test/expect-tests/test.ml
+# file test/expect-tests/test.ml
+24150bafd4bec9b34e6c2987843f0d50:test/expect-tests/test.ml
+# end context for test/expect-tests/test.ml
+
+# begin context for test/inline-tests/dune
+# file test/inline-tests/dune
+defe767030b38308ded9a3b67d72e272:test/inline-tests/dune
+# end context for test/inline-tests/dune
+
+# begin context for test/inline-tests/test.ml
+# file test/inline-tests/test.ml
+37b8bc6035cda6302a80178c61f9626e:test/inline-tests/test.ml
+# end context for test/inline-tests/test.ml
+
+# begin context for test/output-tests/dune
+# file test/output-tests/dune
+6c7f452e639b9d2a153f9fb22bc41bb6:test/output-tests/dune
+# end context for test/output-tests/dune
+
+# begin context for test/output-tests/test1.expected
+# file test/output-tests/test1.expected
+dc8d6157230e9ef8e965865f990fbc49:test/output-tests/test1.expected
+# end context for test/output-tests/test1.expected
+
+# begin context for test/output-tests/test2.expected
+# file test/output-tests/test2.expected
+ee63957b3b77455a12e6c269a5032c3f:test/output-tests/test2.expected
+# end context for test/output-tests/test2.expected
+
+# begin context for test/output-tests/test2.ml
+# file test/output-tests/test2.ml
+e8eaab7626ef0aace5e570fffe81f869:test/output-tests/test2.ml
+# end context for test/output-tests/test2.ml
