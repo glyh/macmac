@@ -12,6 +12,7 @@ type value =
   | Str of string
   | Sym of string
   | Nil
+  | Fn of (string list * value)
   | PrimFn of (value list -> value)
   | PrimSyntax of (value list -> env -> value * env)
 and env = {
@@ -28,6 +29,12 @@ let rec lookup (env: env) (sym: string): value option =
 let bind (env: env) (sym: string) (v: value): env =
   { env with bindings = Env.add env.bindings sym v } 
 
+let rec bind_list (env_base: env) (binds: (string * value) list) : env = 
+  match binds with
+  | (sym, v) :: rest -> 
+    bind_list (bind env_base sym v) rest
+  | [] -> env_base
+
 let rec as_string (form: value): string = 
   match form with
   | List(x, xs) -> "(" ^ (
@@ -42,3 +49,5 @@ let rec as_string (form: value): string =
   | Nil -> "nil"
   | PrimFn _ -> "[primfn]"
   | PrimSyntax _ -> "[primsyntax]"
+  | Fn _ -> "[function]"
+  (* | Fn(args, body) -> "(fn [" ^ (String.concat " " args) ^ "] " ^ (as_string body) ^ ")" *)

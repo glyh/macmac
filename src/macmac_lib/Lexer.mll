@@ -45,6 +45,7 @@ rule token = parse
   | "true" { BOOL true }
   | "false" { BOOL false }
   | "nil" { NIL }
+  | "()" { NIL }
 
   (* primitive types *)
   (* | "Int" { INT_T }*)

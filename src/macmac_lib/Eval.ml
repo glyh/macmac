@@ -6,6 +6,17 @@ type reason =
   | Uncallable of value
   | UndefinedVariable of string
 
+let reason_to_string r = 
+  match r with
+  | TypeError {value; expected_type} -> 
+    "Got" ^ (as_string value) ^ "but expecting " ^ expected_type
+  | ArityError {actual; expected} -> 
+    Printf.sprintf "Expected %d arity got %d" expected actual
+  | Uncallable v -> 
+    (as_string v) ^ " is not callable"
+  | UndefinedVariable s -> 
+    "Symbol `" ^ s ^ "` is undefined"
+
 exception RuntimeError of reason
 
 let as_float (v: value) : float =
@@ -13,41 +24,6 @@ let as_float (v: value) : float =
   | Float(f) -> f
   | _ -> raise (RuntimeError(TypeError { value = v; expected_type = "float" }))
 
-let add_vals (vs: value list) = 
-  vs |> List.map as_float
-  |> List.fold_left (+.) 0.0
-  |> fun f -> Float f
-
-let sub_vals (vs: value list) = 
-  let fs = vs |> List.map as_float in
-  match fs with
-  | [only] -> Float (0.0 -. only)
-  | hd :: rest ->
-    Float (hd -. (List.fold_left (+.) 0.0 rest))
-  | _ -> raise (RuntimeError(ArityError { expected = 2; actual = List.length vs }))
-
-let mul_vals (vs: value list) = 
-  vs |> List.map as_float
-  |> List.fold_left ( *.) 1.0
-  |> fun f -> Float f
-
-let div_vals (vs: value list) = 
-  let fs = vs |> List.map as_float in
-  match fs with
-  | [only] -> Float (1.0 /. only)
-  | hd :: rest ->
-    Float (hd /. (List.fold_left ( *.) 0.0 rest))
-  | _ -> raise (RuntimeError(ArityError { expected = 2; actual = List.length vs }))
-
-let repl_env = {
-  bindings = Env.of_list [
-    "+", PrimFn add_vals;
-    "-", PrimFn sub_vals;
-    "*", PrimFn mul_vals;
-    "/", PrimFn div_vals;
-  ];
-  outer = None 
-}
 
 let rec evlist (forms: value list) (env: env): (value list * env) =
   match forms with 
@@ -66,26 +42,48 @@ and eval (form: value) (env: env): (value * env) =
     let bound_env = bind env_eval_bound bound_sym v in
     let out, _ = evlist inners bound_env in
     out |> List.rev |> List.hd, env
+  | List (Sym "do", []) -> 
+    Nil, env
+  | List (Sym "do", es) -> 
+    let vs, env = evlist es env in 
+      vs |> List.rev |> List.hd, env
+  | List (Sym "if", [cond; _then; _else]) -> 
+    begin match eval cond env with
+    | Bool true, _ -> 
+      let out, _ = eval _then env in 
+        out, env
+    | Bool false , _ ->
+      let out, _ = eval _else env in 
+        out, env
+    | v, _ -> 
+      raise (RuntimeError(TypeError{value= v; expected_type= "bool"}))
+    end
+  | List (Sym "fn*", Nil :: body) -> 
+    Fn ([], List(Sym "do", body)), env 
+  | List (Sym "fn*", List(arg, args) :: body) -> 
+    Fn ((arg :: args) |> List.map sym_as_string, List(Sym "do", body)), env
   | Sym(s) -> 
     begin match lookup env s with 
     | Some(s) -> s, env
     | None -> raise (RuntimeError(UndefinedVariable s))
     end
-  | List(Sym s, args) -> 
-    let fn = begin match lookup env s with
-    | Some(s) -> s
-    | None -> raise (RuntimeError(UndefinedVariable s))
-    end in
+  | List(what, args) -> 
+    (* case for function call *)
+    let fn, _ = eval what env in
     begin match fn with
     | PrimFn(f) -> 
-      let args, env = evlist args env in
+      let args, _ = evlist args env in
       let output = f args in
       output, env
+    | Fn(binds, body) -> 
+        if List.length args == List.length binds 
+        then
+          let args, _ = evlist args env in 
+          let args_bound = List.combine binds args in
+          let env_body = bind_list env args_bound in
+            eval body env_body
+        else 
+          raise (RuntimeError(ArityError { expected = List.length binds ; actual = List.length args }))
     | _ -> raise (RuntimeError(Uncallable fn))
     end
   | a -> a, env
-
-let eval_multi (forms: value list) (env: env): (value * env) =
-  match evlist forms env with
-  | ([], env) -> (Nil, env)
-  | (xs, env) -> (xs |> List.rev |> List.hd, env)

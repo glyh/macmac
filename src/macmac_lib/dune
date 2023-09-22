@@ -9,8 +9,8 @@
   
   )
 
-(ocamllex Lexer)
 (menhir (modules Parser))
+(ocamllex Lexer)
 
 (rule
     (targets version.ml)
