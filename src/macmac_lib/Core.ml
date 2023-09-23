@@ -1,15 +1,124 @@
 open Ast
 open Eval
 
-let add_vals (vs: value list) = 
-  vs |> List.map as_float
-  |> List.fold_left (+.) 0.0
-  |> fun f -> Float f
+(*****************************)
+(* Core Macros/Special Forms *)
+(*****************************)
+
+let list_concat (v1: value) (v2: value) = 
+  match v1, v2 with
+  | Nil, Nil -> Nil
+  | Nil, (List _ as l) -> l
+  | List _ as l, Nil -> l
+  | List(a, b), List(c, d) -> List(a, b @ (c::d))
+  | ((List _ | Nil), v | v, _) -> raise (RuntimeError(TypeError{value= v; expected_type= "bool"}))
+
+let list_cons (v1: value) (v2: value) = 
+  match v1, v2 with
+  | hd, List(hd2, tl) -> List(hd, hd2 :: tl)
+  | hd, Nil -> List(hd, [])
+  | _, x -> raise (RuntimeError(TypeError{value= x; expected_type= "list|nil"}))
+
+
+let definition eval vals env : (value * env) = 
+  match vals with
+  | [Sym sym; v] -> 
+    let v, env_new = eval v env in
+    v, bind env_new sym v
+  | _ -> raise (RuntimeError(SyntaxError "def!"))
+
+let let_star eval vals env = 
+  match vals with
+  | List (Sym bound_sym, [bound_val]) :: inners -> 
+    let v, env_eval_bound = eval bound_val env in
+    let bound_env = bind env_eval_bound bound_sym v in
+    let out, _ = evlist inners bound_env in
+    out |> List.rev |> List.hd, env
+  | _ -> raise (RuntimeError(SyntaxError "let*"))
+
+let do_seq _ vals env = 
+  match vals with
+  | [] -> Nil, env
+  | es -> 
+    let vs, env = evlist es env in 
+      vs |> List.rev |> List.hd, env
+
+let if_form eval vals env = 
+  match vals with 
+  | [cond; _then; _else] -> 
+    begin match eval cond env with
+    | Bool true, _ -> 
+      let out, _ = eval _then env in 
+        out, env
+    | Bool false , _ ->
+      let out, _ = eval _else env in 
+        out, env
+    | v, _ -> 
+      raise (RuntimeError(TypeError{value= v; expected_type= "bool"}))
+    end
+  | [cond; _then] -> 
+    begin match eval cond env with
+    | Bool true, _ -> 
+      let out, _ = eval _then env in 
+        out, env
+    | Bool false , _ ->
+        Nil, env
+    | v, _ -> 
+      raise (RuntimeError(TypeError{value= v; expected_type= "bool"}))
+    end
+  | _ -> raise (RuntimeError(SyntaxError "if"))
 
 let sym_as_string (v: value) : string = 
   match v with
   | Sym(s) -> s
   | _ -> raise (RuntimeError(TypeError { value = v; expected_type = "symbol"}))
+
+let fn_star _ vals env = 
+  match vals with 
+  | Nil :: body -> 
+    Fn([], List(Sym "do", body), env), env
+  | List(arg, args) :: body -> 
+    Fn((arg :: args) |> List.map sym_as_string, List(Sym "do", body), env), env
+  | _ -> raise (RuntimeError(SyntaxError "fn*"))
+
+let quote _ vals env = 
+  match vals with
+  | [x] -> x, env
+  | _ -> raise (RuntimeError(SyntaxError "quote"))
+
+
+exception Unimplemented
+
+let quasiquote eval vals env = 
+  let rec quasiquote_inner eval ast env = 
+    match ast with
+    | List(Sym "unquote", [v]) -> eval v env
+    | List(Sym "unquote", vs) -> raise (RuntimeError(ArityError { expected = 2; actual = List.length vs }))
+    | List (v, vs) -> 
+      quasiquote_list_acc eval (v :: vs) env, env
+    | any -> any, env
+  and quasiquote_list_acc eval lst env = 
+    match lst with
+    | List(Sym "splice-unquote", [spliced]) :: rest -> 
+      let spliced, _ = eval spliced env in
+      list_concat spliced (quasiquote_list_acc eval rest env)
+    | any :: rest ->
+      let quasiquuoted, _ = quasiquote_inner eval any env in
+      list_cons quasiquuoted (quasiquote_list_acc eval rest env)
+    | [] -> Nil
+  in
+  match vals with
+  | [x] -> (quasiquote_inner eval x env)
+  | _ -> raise (RuntimeError(SyntaxError "quasiquote"))
+
+(******************)
+(* Core Functions *)
+(******************)
+
+let add_vals (vs: value list) = 
+  vs |> List.map as_float
+  |> List.fold_left (+.) 0.0
+  |> fun f -> Float f
 
 let sub_vals (vs: value list) = 
   let fs = vs |> List.map as_float in
@@ -101,8 +210,27 @@ let gt (vs: value list) =
     let f2 = v2 |> as_float in
     f1 > f2) vs
 
+let cons (vs: value list) = 
+  match vs with
+  | [a; b] -> list_cons a b
+  | _ -> raise (RuntimeError(ArityError { expected = 2; actual = List.length vs }))
+
+let rec concat (vs: value list) = 
+  match vs with
+  | [] -> Nil
+  | [a] -> a
+  | a :: rest -> list_concat a (concat rest)
+
 let core_env = {
   bindings = Env.of_list [
+    "def!", PrimSyntax definition;
+    "let*", PrimSyntax let_star;
+    "do", PrimSyntax do_seq;
+    "if", PrimSyntax if_form; 
+    "fn*", PrimSyntax fn_star;
+    "quote", PrimSyntax quote;
+    "quasiquote", PrimSyntax quasiquote;
+
     "+", PrimFn add_vals;
     "-", PrimFn sub_vals;
     "*", PrimFn mul_vals;
@@ -116,6 +244,8 @@ let core_env = {
     "<=", PrimFn le;
     ">=", PrimFn ge;
     ">", PrimFn gt;
+    "cons", PrimFn cons;
+    "concat", PrimFn concat;
   ];
   outer = None 
 }

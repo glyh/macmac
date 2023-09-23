@@ -12,9 +12,11 @@ type value =
   | Str of string
   | Sym of string
   | Nil
-  | Fn of (string list * value)
+  (* closure *)
+  | Fn of (string list * value * env)
   | PrimFn of (value list -> value)
-  | PrimSyntax of (value list -> env -> value * env)
+  (* pass the evaluator to syntax so it can call it whenever it wants to*)
+  | PrimSyntax of ((value -> env -> value * env) -> value list -> env -> value * env)
 and env = {
   bindings: value Env.t;
   outer: env option
