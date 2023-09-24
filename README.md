@@ -1,14 +1,7 @@
+An experiment on macros. 
 
+Codebase loosely follows [Make A Lisp](https://github.com/kanaka/mal), with the exception of macro system. The macro system we use here is Scheme's Hygienic macros. 
 
-
-
-# macmac
-
-This is the description
-of the macmac OCaml project
-
-
-* Website: Not yet specified
-* General Documentation: Not yet specified
-* API Documentation: Not yet specified
-* Sources: Not yet specified
+Ideas to explore:
+- Non S-expression syntax aka Honu-like macro system. 
+- Type-aware macro expansion.
