@@ -19,9 +19,7 @@
    ppx_inline_test
    ppx_expect
    odoc
-   ocamlformat
-  )
- )
+   ocamlformat))
 
 (package
  (name macmac_lib)
@@ -29,12 +27,8 @@
  (description "This is the description\nof the macmac OCaml project\n")
  (depends
    (ocaml (>= 4.07.0))
-   (containers-data (and ( >= 3.12 )( < 3.13 )))
+   (containers-data (and ( >= 3.12 )( < 3.13)))
    ppx_inline_test
    ppx_expect
    odoc
-   ocamlformat
-  )
- )
-
-
+   ocamlformat))
