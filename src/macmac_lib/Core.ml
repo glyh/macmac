@@ -1,5 +1,6 @@
 open Ast
 open Eval
+open Macro
 
 (*****************************)
 (* Core Macros/Special Forms *)
@@ -221,32 +222,43 @@ let rec concat (vs: value list) =
   | [a] -> a
   | a :: rest -> list_concat a (concat rest)
 
-let core_env = {
-  bindings = Env.of_list [
-    "def!", PrimSyntax definition;
-    "let*", PrimSyntax let_star;
-    "do", PrimSyntax do_seq;
-    "if", PrimSyntax if_form; 
-    "fn*", PrimSyntax fn_star;
-    "quote", PrimSyntax quote;
-    "quasiquote", PrimSyntax quasiquote;
+let binding_list = [
+  "def!", PrimSyntax definition;
+  "let*", PrimSyntax let_star;
+  "do", PrimSyntax do_seq;
+  "if", PrimSyntax if_form; 
+  "fn*", PrimSyntax fn_star;
+  "quote", PrimSyntax quote;
+  "quasiquote", PrimSyntax quasiquote;
 
-    "+", PrimFn add_vals;
-    "-", PrimFn sub_vals;
-    "*", PrimFn mul_vals;
-    "/", PrimFn div_vals;
-    "prn", PrimFn prn;
-    "list", PrimFn make_list;
-    "list?", PrimFn is_list;
-    "count", PrimFn count;
-    "=", PrimFn eq;
-    "<", PrimFn lt;
-    "<=", PrimFn le;
-    ">=", PrimFn ge;
-    ">", PrimFn gt;
-    "cons", PrimFn cons;
-    "concat", PrimFn concat;
-  ];
+  "+", PrimFn add_vals;
+  "-", PrimFn sub_vals;
+  "*", PrimFn mul_vals;
+  "/", PrimFn div_vals;
+  "prn", PrimFn prn;
+  "list", PrimFn make_list;
+  "list?", PrimFn is_list;
+  "count", PrimFn count;
+  "=", PrimFn eq;
+  "<", PrimFn lt;
+  "<=", PrimFn le;
+  ">=", PrimFn ge;
+  ">", PrimFn gt;
+  "cons", PrimFn cons;
+  "concat", PrimFn concat;
+]
+
+let core_env = {
+  bindings = Env.of_list binding_list;
   outer = None 
 }
 
+let core_scope = new_scope ()
+let core_binding_env = 
+  let binding_to_scope_bind p = 
+    let (sym, _) = p in 
+    ((sym, Binding.singleton core_scope), new_uid ())
+  in
+  List.map binding_to_scope_bind binding_list
+  |> BindEnv.of_list
+let global_binding_env = core_binding_env
