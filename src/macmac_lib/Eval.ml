@@ -1,9 +1,9 @@
 open Ast
 
 type reason = 
-  | TypeError of {value: value; expected_type: string}
+  | TypeError of {value: datum; expected_type: string}
   | ArityError of {expected: int; actual: int}
-  | Uncallable of value
+  | Uncallable of datum
   | UndefinedVariable of string
   | SyntaxError of string
 
@@ -22,27 +22,26 @@ let reason_to_string r =
 
 exception RuntimeError of reason
 
-let as_float (v: value) : float =
+let as_float (v: datum) : float =
   match v with
   | Float(f) -> f
   | _ -> raise (RuntimeError(TypeError { value = v; expected_type = "float" }))
 
-
-let rec evlist (forms: value list) (env: env): (value list * env) =
+let rec evlist (forms: datum list) (env: env): (datum list * env) =
   match forms with 
   | [] -> [], env
   | x :: xs -> 
     let v_out, env_out = eval x env in
     let vs_out, env_out = evlist xs env_out in
     v_out :: vs_out, env_out
-and eval (form: value) (env: env): (value * env) = 
+and eval (form: datum) (env: env): (datum * env) = 
   match form with
-  | Sym(s) -> 
+  | DSym(s) -> 
     begin match lookup env s with 
     | Some(s) -> s, env
     | None -> raise (RuntimeError(UndefinedVariable s))
     end
-  | List(what, args) -> 
+  | DList(what, args) -> 
     (* case for function call *)
     let fn, _ = eval what env in
     begin match fn with

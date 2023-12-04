@@ -15,7 +15,7 @@ open Ast
 
 %token EOF
 
-%type <value list> program
+%type <datum list> program
 
 %start program
 
@@ -29,7 +29,7 @@ form:
   | f=FLOAT { Float f }
   | kw=KEYWORD { Keyword kw }
   | s=STRING { Str s }
-  | sym=IDENT { Sym sym }
+  | sym=IDENT { DSym sym }
   | NIL { Nil }
   | LPAREN RPAREN { Nil }
-  | LPAREN f=form fs=list(form) RPAREN { List(f, fs) }
+  | LPAREN f=form fs=list(form) RPAREN { DList(f, fs) }
